@@ -1,0 +1,12 @@
+<div class="min-h-screen bg-white p-8">
+  <h1 class="text-3xl font-bold text-center mb-8">Menú del Restaurante 🍽️</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let plato of platos"
+         class="p-4 border rounded-xl shadow hover:shadow-lg transition">
+      <h2 class="font-semibold text-xl mb-2">{{ plato.nombre }}</h2>
+      <p class="text-gray-600 mb-2">{{ plato.descripcion }}</p>
+      <p class="font-bold text-green-600">$ {{ plato.precio | number:'1.2-2' }}</p>
+    </div>
+  </div>
+</div>

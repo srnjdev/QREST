@@ -1,0 +1,24 @@
+<div class="p-6 max-w-6xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Menús</h1>
+    <a routerLink="/menus/crear" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+      + Nuevo Menú
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let m of menus" class="bg-white rounded-xl shadow p-4">
+      <h3 class="font-semibold text-lg">{{ m.nombre }}</h3>
+      <p class="text-gray-600">Platillos: {{ m.platillos?.length || 0 }}</p>
+
+      <div class="flex gap-2 mt-4">
+        <a [routerLink]="['/menus/editar', m.id]"
+           class="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600">Editar</a>
+        <a [routerLink]="['/menu', m.id]"
+           class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">Ver público</a>
+        <button (click)="remove(m.id!)"
+           class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
