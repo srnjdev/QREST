@@ -1,0 +1,23 @@
+<div class="p-6 max-w-6xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Platillos</h1>
+    <a routerLink="/platillos/crear"
+       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">+ Nuevo</a>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let d of dishes" class="bg-white rounded-xl shadow p-4">
+      <img *ngIf="d.imagenUrl" [src]="d.imagenUrl" alt="" class="w-full h-40 object-cover rounded-md mb-3">
+      <h3 class="font-semibold text-lg">{{ d.nombre }}</h3>
+      <p class="text-gray-600">{{ d.descripcion }}</p>
+      <p class="font-bold text-green-600 mt-2">$ {{ d.precio | number:'1.2-2' }}</p>
+
+      <div class="flex gap-2 mt-4">
+        <a [routerLink]="['/platillos/editar', d.id]"
+           class="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600">Editar</a>
+        <button (click)="remove(d.id!)"
+           class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

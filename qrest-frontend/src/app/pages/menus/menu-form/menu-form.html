@@ -1,0 +1,30 @@
+<div class="min-h-screen flex items-start justify-center p-6 bg-gray-50">
+  <form class="bg-white w-full max-w-2xl p-6 rounded-2xl shadow"
+        (ngSubmit)="save()">
+
+    <h1 class="text-2xl font-bold mb-6">{{ isEdit ? 'Editar' : 'Nuevo' }} menú</h1>
+
+    <div class="mb-6">
+      <label class="block text-sm font-semibold mb-1">Nombre del menú</label>
+      <input class="w-full border rounded px-3 py-2" [(ngModel)]="nombre" name="nombre" required>
+    </div>
+
+    <div class="mb-2 font-semibold">Selecciona platillos</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <label *ngFor="let d of allDishes" class="border rounded p-3 flex gap-3 items-start">
+        <input type="checkbox" [checked]="selectedIds.has(d.id!)" (change)="toggle(d.id!)">
+        <div>
+          <div class="font-medium">{{ d.nombre }}</div>
+          <div class="text-sm text-gray-600">$ {{ d.precio | number:'1.2-2' }}</div>
+        </div>
+      </label>
+    </div>
+
+    <div class="flex gap-2 mt-6">
+      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        {{ isEdit ? 'Actualizar' : 'Crear' }}
+      </button>
+      <a routerLink="/menus" class="px-4 py-2 border rounded">Cancelar</a>
+    </div>
+  </form>
+</div>
