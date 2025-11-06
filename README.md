@@ -1,7 +1,3 @@
-Aquí tienes una versión profesional, directa y sin emojis del archivo `README.md`.
-
------
-
 # QREST - Sistema de Gestión de Menús Digitales
 
 QREST es una aplicación web full-stack diseñada para la administración y visualización de menús de restaurantes mediante códigos QR. El sistema permite actualizaciones en tiempo real y acceso público a los menús sin necesidad de autenticación por parte del cliente final.
