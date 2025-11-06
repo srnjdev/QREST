@@ -1,7 +1,20 @@
 export interface Dish {
   id?: number;
-  nombre: string;
-  descripcion?: string;
-  precio: number;
-  imagenUrl?: string;   // URL devuelta por backend
+  name: string;
+  description: string;
+  price: number;
+  categoryId: number;
+  categoryName?: string;
+  imageUrl?: string;
+  available: boolean;
+  active: boolean;
+  allergens?: string[];
+}
+
+export interface Category {
+  id?: number;
+  name: string;
+  description?: string;
+  displayOrder: number;
+  active: boolean;
 }

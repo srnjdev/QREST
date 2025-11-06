@@ -1,29 +1,51 @@
 <div class="min-h-screen flex items-start justify-center p-6 bg-gray-50">
-  <form class="bg-white w-full max-w-xl p-6 rounded-2xl shadow"
-        (ngSubmit)="save()">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Cargando...</p>
+  </div>
+
+  <form *ngIf="!loading" class="bg-white w-full max-w-xl p-6 rounded-2xl shadow" (ngSubmit)="save()">
 
     <h1 class="text-2xl font-bold mb-6">{{ isEdit ? 'Editar' : 'Nuevo' }} platillo</h1>
 
     <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1">Nombre</label>
-      <input class="w-full border rounded px-3 py-2" [(ngModel)]="form.nombre" name="nombre" required>
+      <label class="block text-sm font-semibold mb-1">Nombre *</label>
+      <input class="w-full border rounded px-3 py-2" [(ngModel)]="form.name" name="name" required>
     </div>
 
     <div class="mb-4">
       <label class="block text-sm font-semibold mb-1">Descripción</label>
-      <textarea class="w-full border rounded px-3 py-2" [(ngModel)]="form.descripcion" name="descripcion" rows="3"></textarea>
+      <textarea class="w-full border rounded px-3 py-2" [(ngModel)]="form.description" name="description"
+        rows="3"></textarea>
     </div>
 
     <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1">Precio ($)</label>
-      <input type="number" class="w-full border rounded px-3 py-2"
-             [(ngModel)]="form.precio" name="precio" min="0" step="0.01" required>
+      <label class="block text-sm font-semibold mb-1">Categoría *</label>
+      <select class="w-full border rounded px-3 py-2" [(ngModel)]="form.categoryId" name="categoryId" required>
+        <option [value]="undefined">-- Selecciona una categoría --</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+      </select>
     </div>
 
     <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1">Imagen</label>
-      <input type="file" (change)="onFile($event)" accept="image/*" class="w-full">
-      <img *ngIf="previewUrl" [src]="previewUrl" class="mt-3 h-40 object-cover rounded">
+      <label class="block text-sm font-semibold mb-1">Precio ($) *</label>
+      <input type="number" class="w-full border rounded px-3 py-2" [(ngModel)]="form.price" name="price" min="0"
+        step="0.01" required>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-sm font-semibold mb-1">URL de imagen</label>
+      <input type="url" class="w-full border rounded px-3 py-2" [(ngModel)]="form.imageUrl" name="imageUrl"
+        placeholder="https://example.com/image.jpg">
+      <img *ngIf="form.imageUrl" [src]="form.imageUrl" class="mt-3 h-40 object-cover rounded">
+    </div>
+
+    <div class="mb-4">
+      <label class="flex items-center gap-2">
+        <input type="checkbox" [(ngModel)]="form.available" name="available" class="w-4 h-4">
+        <span class="text-sm font-semibold">Disponible para ordenar</span>
+      </label>
     </div>
 
     <div class="flex gap-2 mt-6">

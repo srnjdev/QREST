@@ -1,55 +1,49 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Menu } from '../../models/menu.model';
-import { DishService } from './dish';
-import { load, save } from './storage.util';
-
-const STORAGE_KEY = 'qrest_menus';
-const ID_KEY = 'qrest_menus_lastId';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
-  private menus$ = new BehaviorSubject<Menu[]>(load<Menu[]>(STORAGE_KEY, []));
-  private lastId = load<number>(ID_KEY, 0);
+  private apiUrl = 'http://localhost:8080/api/menus';
+  private headers = new HttpHeaders({
+    'Authorization': 'Basic ' + btoa('admin:admin123'),
+    'Content-Type': 'application/json'
+  });
 
-  constructor(private dishSrv: DishService) {}
+  constructor(private http: HttpClient) { }
 
-  private persist() {
-    save(STORAGE_KEY, this.menus$.value);
-    save(ID_KEY, this.lastId);
+  getAllMenus(): Observable<Menu[]> {
+    return this.http.get<Menu[]>(this.apiUrl, { headers: this.headers });
   }
 
-  list(): Observable<Menu[]> {
-    return this.menus$.asObservable();
+  getMenuById(id: number): Observable<Menu> {
+    return this.http.get<Menu>(`${this.apiUrl}/${id}`, { headers: this.headers });
   }
 
-  get(id: number): Observable<Menu> {
-    const found = this.menus$.value.find(m => m.id === id)!;
-    return of(found);
+  getMenuByQrCode(qrCode: string): Observable<Menu> {
+    // Este endpoint NO requiere autenticación (público)
+    return this.http.get<Menu>(`${this.apiUrl}/qr/${qrCode}`);
   }
 
-  // payload: { nombre, platillosIds }
-  create(payload: { nombre: string; platillosIds: number[] }) {
-    const newMenu: Menu = { id: ++this.lastId, nombre: payload.nombre, platillos: [] };
-    // resolvemos platillos por id en el momento de mostrar (o aquí si prefieres)
-    (newMenu as any).platillosIds = payload.platillosIds;
-    const next = [...this.menus$.value, newMenu];
-    this.menus$.next(next);
-    this.persist();
-    return newMenu;
+  createMenu(menu: Menu): Observable<Menu> {
+    return this.http.post<Menu>(this.apiUrl, menu, { headers: this.headers });
   }
 
-  update(id: number, payload: { nombre: string; platillosIds: number[] }) {
-    const next = this.menus$.value.map(m =>
-      m.id === id ? { ...m, nombre: payload.nombre, platillos: [], platillosIds: payload.platillosIds } as any : m
-    );
-    this.menus$.next(next);
-    this.persist();
+  updateMenu(id: number, menu: Menu): Observable<Menu> {
+    return this.http.put<Menu>(`${this.apiUrl}/${id}`, menu, { headers: this.headers });
   }
 
-  delete(id: number) {
-    const next = this.menus$.value.filter(m => m.id !== id);
-    this.menus$.next(next);
-    this.persist();
+  deleteMenu(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  }
+
+  addDishToMenu(menuId: number, dishId: number): Observable<Menu> {
+    return this.http.post<Menu>(`${this.apiUrl}/${menuId}/dishes/${dishId}`, {}, { headers: this.headers });
+  }
+
+  removeDishFromMenu(menuId: number, dishId: number): Observable<Menu> {
+    return this.http.delete<Menu>(`${this.apiUrl}/${menuId}/dishes/${dishId}`, { headers: this.headers });
   }
 }
+

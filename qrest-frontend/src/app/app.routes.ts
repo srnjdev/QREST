@@ -6,9 +6,13 @@ import { DishListComponent } from './pages/dishes/dish-list/dish-list';
 import { DishFormComponent } from './pages/dishes/dish-form/dish-form';
 import { MenuListComponent } from './pages/menus/menu-list/menu-list';
 import { MenuFormComponent } from './pages/menus/menu-form/menu-form';
+import { TestComponent } from './pages/test/test';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
+
+  // Página de prueba
+  { path: 'test', component: TestComponent },
 
   // Platillos
   { path: 'platillos', component: DishListComponent },
@@ -20,8 +24,9 @@ export const routes: Routes = [
   { path: 'menus/crear', component: MenuFormComponent },
   { path: 'menus/editar/:id', component: MenuFormComponent },
 
-  // Público (QR)
-  { path: 'menu/:id', component: PublicMenuComponent },
+  // Público (QR) - usa qrCode como parámetro
+  { path: 'public-menu/:qrCode', component: PublicMenuComponent },
 
   { path: '**', redirectTo: '' },
 ];
+

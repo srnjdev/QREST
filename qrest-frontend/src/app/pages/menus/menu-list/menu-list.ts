@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MenuService } from '../../../core/services/menu';
-import { DishService } from '../../../core/services/dish';
 import { Menu } from '../../../models/menu.model';
-import { Dish } from '../../../models/dish.model';
 
 @Component({
   standalone: true,
@@ -15,36 +13,45 @@ import { Dish } from '../../../models/dish.model';
 })
 export class MenuListComponent implements OnInit {
   menus: Menu[] = [];
+  loading = true;
 
   constructor(
     private menuSrv: MenuService,
-    private dishSrv: DishService
-  ) {}
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.load();
   }
 
   load() {
-    // 🔽 Cargamos los menús desde el servicio en memoria
-    this.menuSrv.list().subscribe(menus => {
-      this.menus = menus.map(m => {
-        const ids = (m as any).platillosIds as number[] | undefined;
-        if (!ids?.length) return m;
-
-        // 🔽 Nos suscribimos una sola vez a los platillos disponibles
-        this.dishSrv.list().subscribe(ds => {
-          // Vinculamos los objetos de platillos por ID
-          m.platillos = ds.filter(d => ids.includes(d.id!));
-        });
-
-        return m;
-      });
+    this.loading = true;
+    this.cdr.detectChanges();
+    this.menuSrv.getAllMenus().subscribe({
+      next: (menus) => {
+        this.menus = menus;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading menus:', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
   remove(id: number) {
     if (!confirm('¿Eliminar este menú?')) return;
-    this.menuSrv.delete(id);
+
+    this.menuSrv.deleteMenu(id).subscribe({
+      next: () => {
+        this.load(); // Recargar lista
+      },
+      error: (err) => {
+        console.error('Error deleting menu:', err);
+        alert('Error al eliminar el menú');
+      }
+    });
   }
 }

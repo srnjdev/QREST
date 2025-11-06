@@ -1,23 +1,57 @@
 <div class="p-6 max-w-6xl mx-auto">
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold">Platillos</h1>
-    <a routerLink="/platillos/crear"
-       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">+ Nuevo</a>
+    <a routerLink="/platillos/crear" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">+ Nuevo</a>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div *ngFor="let d of dishes" class="bg-white rounded-xl shadow p-4">
-      <img *ngIf="d.imagenUrl" [src]="d.imagenUrl" alt="" class="w-full h-40 object-cover rounded-md mb-3">
-      <h3 class="font-semibold text-lg">{{ d.nombre }}</h3>
-      <p class="text-gray-600">{{ d.descripcion }}</p>
-      <p class="font-bold text-green-600 mt-2">$ {{ d.precio | number:'1.2-2' }}</p>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Cargando platillos...</p>
+  </div>
+
+  <!-- Dishes Grid -->
+  <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let d of dishes" class="bg-white rounded-xl shadow-lg hover:shadow-xl transition p-4">
+      <img *ngIf="d.imageUrl" [src]="d.imageUrl" alt="{{ d.name }}" class="w-full h-40 object-cover rounded-md mb-3">
+      <div *ngIf="!d.imageUrl"
+        class="w-full h-40 bg-gradient-to-br from-orange-100 to-red-100 rounded-md mb-3 flex items-center justify-center">
+        <span class="text-5xl">🍽️</span>
+      </div>
+
+      <div class="mb-2">
+        <span class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800">{{ d.categoryName }}</span>
+      </div>
+
+      <h3 class="font-semibold text-lg">{{ d.name }}</h3>
+      <p class="text-gray-600 text-sm">{{ d.description }}</p>
+      <p class="font-bold text-green-600 mt-2 text-xl">$ {{ d.price | number:'1.2-2' }}</p>
+
+      <div class="flex items-center gap-2 mt-2">
+        <span *ngIf="d.available" class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
+          ✓ Disponible
+        </span>
+        <span *ngIf="!d.available" class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-800">
+          ✗ No disponible
+        </span>
+      </div>
 
       <div class="flex gap-2 mt-4">
         <a [routerLink]="['/platillos/editar', d.id]"
-           class="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600">Editar</a>
-        <button (click)="remove(d.id!)"
-           class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700">Eliminar</button>
+          class="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600 text-sm">✏️ Editar</a>
+        <button (click)="remove(d.id!)" class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-sm">🗑️
+          Eliminar</button>
       </div>
     </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && dishes.length === 0" class="text-center py-12">
+    <div class="text-6xl mb-4">🍽️</div>
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">No hay platillos creados</h3>
+    <p class="text-gray-600 mb-4">Crea tu primer platillo para comenzar</p>
+    <a routerLink="/platillos/crear" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+      + Crear Primer Platillo
+    </a>
   </div>
 </div>

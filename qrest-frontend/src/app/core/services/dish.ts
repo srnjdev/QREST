@@ -1,72 +1,62 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { Dish } from '../../models/dish.model';
-import { load, save } from './storage.util';
-
-const STORAGE_KEY = 'qrest_dishes';
-const ID_KEY = 'qrest_dishes_lastId';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Dish, Category } from '../../models/dish.model';
 
 @Injectable({ providedIn: 'root' })
 export class DishService {
-  private dishes$ = new BehaviorSubject<Dish[]>(load<Dish[]>(STORAGE_KEY, []));
-  private lastId = load<number>(ID_KEY, 0);
+  private apiUrl = 'http://localhost:8080/api';
+  private headers = new HttpHeaders({
+    'Authorization': 'Basic ' + btoa('admin:admin123'),
+    'Content-Type': 'application/json'
+  });
 
-  constructor() {
-    // ✅ Semilla inicial de platillos (solo la primera vez)
-    if (this.dishes$.value.length === 0) {
-      this.dishes$.next([
-        { id: ++this.lastId, nombre: 'Hamburguesa', descripcion: 'Clásica', precio: 6.99 },
-        { id: ++this.lastId, nombre: 'Pizza Margarita', descripcion: 'Con albahaca', precio: 9.50 },
-      ]);
-      this.persist();
-    }
+  constructor(private http: HttpClient) { }
+
+  // Dishes
+  getAllDishes(): Observable<Dish[]> {
+    return this.http.get<Dish[]>(`${this.apiUrl}/dishes`, { headers: this.headers });
   }
 
-  private persist() {
-    save(STORAGE_KEY, this.dishes$.value);
-    save(ID_KEY, this.lastId);
+  getDishById(id: number): Observable<Dish> {
+    return this.http.get<Dish>(`${this.apiUrl}/dishes/${id}`, { headers: this.headers });
   }
 
-  list(): Observable<Dish[]> {
-    return this.dishes$.asObservable();
+  getDishesByCategory(categoryId: number): Observable<Dish[]> {
+    return this.http.get<Dish[]>(`${this.apiUrl}/dishes/category/${categoryId}`, { headers: this.headers });
   }
 
-  get(id: number): Observable<Dish> {
-    const found = this.dishes$.value.find(d => d.id === id)!;
-    return of(found);
+  createDish(dish: Dish): Observable<Dish> {
+    return this.http.post<Dish>(`${this.apiUrl}/dishes`, dish, { headers: this.headers });
   }
 
-  async createFromForm(form: { nombre: string; descripcion?: string; precio: number }, file?: File) {
-    const imagenUrl = file ? await this.toDataUrl(file) : undefined;
-    const newDish: Dish = { id: ++this.lastId, ...form, imagenUrl };
-    const next = [...this.dishes$.value, newDish];
-    this.dishes$.next(next);
-    this.persist();
-    return newDish;
+  updateDish(id: number, dish: Dish): Observable<Dish> {
+    return this.http.put<Dish>(`${this.apiUrl}/dishes/${id}`, dish, { headers: this.headers });
   }
 
-  async updateFromForm(id: number, form: { nombre: string; descripcion?: string; precio: number }, file?: File) {
-    const current = this.dishes$.value.find(d => d.id === id);
-    if (!current) return;
-    const imagenUrl = file ? await this.toDataUrl(file) : current.imagenUrl;
-    const updated: Dish = { ...current, ...form, imagenUrl };
-    const next = this.dishes$.value.map(d => (d.id === id ? updated : d));
-    this.dishes$.next(next);
-    this.persist();
-    return updated;
+  deleteDish(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/dishes/${id}`, { headers: this.headers });
   }
 
-  delete(id: number) {
-    const next = this.dishes$.value.filter(d => d.id !== id);
-    this.dishes$.next(next);
-    this.persist();
+  // Categories
+  getAllCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.apiUrl}/categories`, { headers: this.headers });
   }
 
-  private toDataUrl(file: File): Promise<string> {
-    return new Promise(res => {
-      const fr = new FileReader();
-      fr.onload = () => res(fr.result as string);
-      fr.readAsDataURL(file);
-    });
+  getCategoryById(id: number): Observable<Category> {
+    return this.http.get<Category>(`${this.apiUrl}/categories/${id}`, { headers: this.headers });
+  }
+
+  createCategory(category: Category): Observable<Category> {
+    return this.http.post<Category>(`${this.apiUrl}/categories`, category, { headers: this.headers });
+  }
+
+  updateCategory(id: number, category: Category): Observable<Category> {
+    return this.http.put<Category>(`${this.apiUrl}/categories/${id}`, category, { headers: this.headers });
+  }
+
+  deleteCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/categories/${id}`, { headers: this.headers });
   }
 }
+

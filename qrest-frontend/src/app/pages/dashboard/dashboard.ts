@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DishService } from '../../core/services/dish';
@@ -16,16 +16,47 @@ import { Menu } from '../../models/menu.model';
 export class DashboardComponent implements OnInit {
   dishes: Dish[] = [];
   menus: Menu[] = [];
+  loading = false;
+  error: string | null = null;
 
   constructor(
     private dishSrv: DishService,
-    private menuSrv: MenuService
-  ) {}
+    private menuSrv: MenuService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-    // suscribimos a los datos almacenados en memoria
-    this.dishSrv.list().subscribe(ds => this.dishes = ds);
-    this.menuSrv.list().subscribe(ms => this.menus = ms);
+    this.loading = true;
+    this.error = null;
+    this.cdr.detectChanges();
+
+    // Load dishes and menus from API
+    this.dishSrv.getAllDishes().subscribe({
+      next: (ds: Dish[]) => {
+        this.dishes = ds;
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading dishes:', error);
+        this.error = `Error al cargar platillos: ${error.message || 'Error desconocido'}`;
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+    this.menuSrv.getAllMenus().subscribe({
+      next: (ms: Menu[]) => {
+        this.menus = ms;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading menus:', error);
+        if (!this.error) {
+          this.error = `Error al cargar menús: ${error.message || 'Error desconocido'}`;
+        }
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   // cantidad de platillos registrados
@@ -41,12 +72,7 @@ export class DashboardComponent implements OnInit {
   get recentMenus() { return [...this.menus].reverse().slice(0, 3); }
 
   // método helper para mostrar cantidad de platillos por menú
-  getPlatillosCount(menu: Menu): number {
-    // Si el menú tiene una lista de IDs (cuando viene de localStorage)
-    const idsCount = (menu as any)['platillosIds']?.length ?? 0;
-    // Si el menú tiene objetos de platillos (cuando ya está cargado)
-    const platosCount = menu.platillos?.length ?? 0;
-    // Devolver el que tenga datos (preferencia IDs)
-    return idsCount || platosCount || 0;
+  getDishesCount(menu: Menu): number {
+    return menu.dishes?.length ?? 0;
   }
 }

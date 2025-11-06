@@ -6,19 +6,60 @@
     </a>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div *ngFor="let m of menus" class="bg-white rounded-xl shadow p-4">
-      <h3 class="font-semibold text-lg">{{ m.nombre }}</h3>
-      <p class="text-gray-600">Platillos: {{ m.platillos?.length || 0 }}</p>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-12">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Cargando menús...</p>
+  </div>
 
-      <div class="flex gap-2 mt-4">
+  <!-- Menus Grid -->
+  <div *ngIf="!loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let m of menus" class="bg-white rounded-xl shadow-lg hover:shadow-xl transition p-6">
+      <div class="mb-4">
+        <h3 class="font-semibold text-xl text-gray-800">{{ m.name }}</h3>
+        <p class="text-gray-600 text-sm mt-1">{{ m.description }}</p>
+      </div>
+
+      <div class="mb-4 space-y-2">
+        <div class="flex items-center text-sm text-gray-600">
+          <span class="font-medium">🍽️ Platillos:</span>
+          <span class="ml-2">{{ m.dishes?.length || 0 }}</span>
+        </div>
+        <div class="flex items-center text-sm text-gray-600">
+          <span class="font-medium">📱 QR:</span>
+          <span class="ml-2 font-mono text-xs">{{ m.qrCode }}</span>
+        </div>
+      </div>
+
+      <div class="flex gap-2 flex-wrap">
         <a [routerLink]="['/menus/editar', m.id]"
-           class="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600">Editar</a>
-        <a [routerLink]="['/menu', m.id]"
-           class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">Ver público</a>
-        <button (click)="remove(m.id!)"
-           class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700">Eliminar</button>
+          class="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600 text-sm">
+          ✏️ Editar
+        </a>
+        <a [routerLink]="['/public-menu', m.qrCode]"
+          class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700 text-sm">
+          👁️ Ver público
+        </a>
+        <button (click)="remove(m.id!)" class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-sm">
+          🗑️ Eliminar
+        </button>
+      </div>
+
+      <!-- QR Code Image (if available) -->
+      <div *ngIf="m.qrImageUrl" class="mt-4 pt-4 border-t">
+        <p class="text-xs text-gray-500 mb-2">Código QR:</p>
+        <img [src]="m.qrImageUrl" alt="QR Code" class="w-32 h-32 mx-auto">
       </div>
     </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && menus.length === 0" class="text-center py-12">
+    <div class="text-6xl mb-4">📋</div>
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">No hay menús creados</h3>
+    <p class="text-gray-600 mb-4">Crea tu primer menú para comenzar</p>
+    <a routerLink="/menus/crear" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+      + Crear Primer Menú
+    </a>
   </div>
 </div>
