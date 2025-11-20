@@ -7,8 +7,10 @@ import { DishFormComponent } from './pages/dishes/dish-form/dish-form';
 import { MenuListComponent } from './pages/menus/menu-list/menu-list';
 import { MenuFormComponent } from './pages/menus/menu-form/menu-form';
 import { TestComponent } from './pages/test/test';
+import { LoginComponent } from './pages/login/login';
 
 export const routes: Routes = [
+  { path: 'login', component: LoginComponent },
   { path: '', component: DashboardComponent },
 
   // Página de prueba
