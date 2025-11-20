@@ -1,0 +1,42 @@
+/* login.css: estilos sencillos. Si usas Tailwind, puedes ignorar o mantener clases en html. */
+.container {
+  max-width: 420px;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.btn {
+  width: 100%;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb; /* azul */
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.error {
+  color: #dc2626; /* rojo */
+  margin-top: 0.6rem;
+  text-align: center;
+}
