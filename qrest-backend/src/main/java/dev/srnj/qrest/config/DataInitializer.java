@@ -4,17 +4,20 @@ import dev.srnj.qrest.entity.Category;
 import dev.srnj.qrest.entity.Dish;
 import dev.srnj.qrest.entity.Menu;
 import dev.srnj.qrest.entity.Restaurant;
+import dev.srnj.qrest.entity.Role;
+import dev.srnj.qrest.service.QRCodeService;
+import dev.srnj.qrest.service.UserService;
 import dev.srnj.qrest.repository.CategoryRepository;
 import dev.srnj.qrest.repository.DishRepository;
 import dev.srnj.qrest.repository.MenuRepository;
 import dev.srnj.qrest.repository.RestaurantRepository;
-import dev.srnj.qrest.service.QRCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -25,12 +28,23 @@ public class DataInitializer implements CommandLineRunner {
     private final DishRepository dishRepository;
     private final MenuRepository menuRepository;
     private final QRCodeService qrCodeService;
+    private final UserService userService; // UserService (JPA) - Opción B
 
     @Override
     public void run(String... args) {
-        // Only initialize if database is empty
+        // Inicializar datos base (restaurante, categorias, platos, menu) si no hay restaurantes
         if (restaurantRepository.count() == 0) {
             initializeData();
+        }
+
+        // Crear usuario admin en la BD (solo si no existe)
+        try {
+            userService.createUser("admin", "admin123", Set.of(Role.ROLE_ADMIN, Role.ROLE_USER));
+            System.out.println("=================================");
+            System.out.println("👤 Usuario administrador creado en BD: admin / admin123");
+            System.out.println("=================================");
+        } catch (Exception e) {
+            // Si ya existe o hay error, lo ignoramos para no detener el arranque
         }
     }
 
@@ -117,8 +131,6 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("🔑 QR Code: " + qrCode);
         System.out.println("🌐 URL: " + qrUrl);
         System.out.println("=================================");
-        System.out.println("👤 Usuario: admin / admin123");
-        System.out.println("=================================");
     }
 
     private Category createCategory(String name, String description, int order) {
@@ -131,7 +143,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private Dish createDish(String name, String description, BigDecimal price,
-            Category category, java.util.List<String> allergens) {
+                            Category category, java.util.List<String> allergens) {
         Dish dish = new Dish();
         dish.setName(name);
         dish.setDescription(description);

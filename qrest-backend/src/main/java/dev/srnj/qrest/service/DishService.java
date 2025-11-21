@@ -63,6 +63,7 @@ public class DishService {
         return convertToDTO(dish);
     }
 
+    @SuppressWarnings("null")
     public DishDTO updateDish(Long id, DishDTO dishDTO) {
         Dish dish = dishRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new RuntimeException("Dish not found with id: " + id));
