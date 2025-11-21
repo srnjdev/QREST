@@ -6,19 +6,19 @@ import { Menu } from '../../models/menu.model';
 @Injectable({ providedIn: 'root' })
 export class MenuService {
   private apiUrl = 'http://localhost:8080/api/menus';
-  private headers = new HttpHeaders({
+  /*private headers = new HttpHeaders({
     'Authorization': 'Basic ' + btoa('admin:admin123'),
     'Content-Type': 'application/json'
-  });
+  });*/
 
   constructor(private http: HttpClient) { }
 
   getAllMenus(): Observable<Menu[]> {
-    return this.http.get<Menu[]>(this.apiUrl, { headers: this.headers });
+    return this.http.get<Menu[]>(this.apiUrl);
   }
 
   getMenuById(id: number): Observable<Menu> {
-    return this.http.get<Menu>(`${this.apiUrl}/${id}`, { headers: this.headers });
+    return this.http.get<Menu>(`${this.apiUrl}/${id}`);
   }
 
   getMenuByQrCode(qrCode: string): Observable<Menu> {
@@ -27,23 +27,23 @@ export class MenuService {
   }
 
   createMenu(menu: Menu): Observable<Menu> {
-    return this.http.post<Menu>(this.apiUrl, menu, { headers: this.headers });
+    return this.http.post<Menu>(this.apiUrl, menu);
   }
 
   updateMenu(id: number, menu: Menu): Observable<Menu> {
-    return this.http.put<Menu>(`${this.apiUrl}/${id}`, menu, { headers: this.headers });
+    return this.http.put<Menu>(`${this.apiUrl}/${id}`, menu);
   }
 
   deleteMenu(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.headers });
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   addDishToMenu(menuId: number, dishId: number): Observable<Menu> {
-    return this.http.post<Menu>(`${this.apiUrl}/${menuId}/dishes/${dishId}`, {}, { headers: this.headers });
+    return this.http.post<Menu>(`${this.apiUrl}/${menuId}/dishes/${dishId}`, {});
   }
 
   removeDishFromMenu(menuId: number, dishId: number): Observable<Menu> {
-    return this.http.delete<Menu>(`${this.apiUrl}/${menuId}/dishes/${dishId}`, { headers: this.headers });
+    return this.http.delete<Menu>(`${this.apiUrl}/${menuId}/dishes/${dishId}`);
   }
 }
 
