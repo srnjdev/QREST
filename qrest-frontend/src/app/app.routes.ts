@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { PublicMenuComponent } from './pages/public-menu/public-menu';
 
@@ -11,20 +12,20 @@ import { LoginComponent } from './pages/login/login';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: '', component: DashboardComponent },
+  { path: '', component: DashboardComponent, canActivate: [authGuard] },
 
   // Página de prueba
-  { path: 'test', component: TestComponent },
+  { path: 'test', component: TestComponent, canActivate: [authGuard] },
 
   // Platillos
-  { path: 'platillos', component: DishListComponent },
-  { path: 'platillos/crear', component: DishFormComponent },
-  { path: 'platillos/editar/:id', component: DishFormComponent },
+  { path: 'platillos', component: DishListComponent, canActivate: [authGuard] },
+  { path: 'platillos/crear', component: DishFormComponent, canActivate: [authGuard] },
+  { path: 'platillos/editar/:id', component: DishFormComponent, canActivate: [authGuard] },
 
   // Menús
-  { path: 'menus', component: MenuListComponent },
-  { path: 'menus/crear', component: MenuFormComponent },
-  { path: 'menus/editar/:id', component: MenuFormComponent },
+  { path: 'menus', component: MenuListComponent, canActivate: [authGuard] },
+  { path: 'menus/crear', component: MenuFormComponent, canActivate: [authGuard] },
+  { path: 'menus/editar/:id', component: MenuFormComponent, canActivate: [authGuard] },
 
   // Público (QR) - usa qrCode como parámetro
   { path: 'public-menu/:qrCode', component: PublicMenuComponent },
