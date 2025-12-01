@@ -12,9 +12,9 @@
       #usernameInput="ngModel"
       autocomplete="username"
     />
-    <div *ngIf="usernameInput.invalid && usernameInput.touched" class="error">
-      Usuario requerido
-    </div>
+    @if (usernameInput.invalid && usernameInput.touched) {
+      <div class="error">Usuario requerido</div>
+    }
 
     <input
       class="input"
@@ -26,14 +26,15 @@
       #passwordInput="ngModel"
       autocomplete="current-password"
     />
-    <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error">
-      Contraseña requerida
-    </div>
+    @if (passwordInput.invalid && passwordInput.touched) {
+      <div class="error">Contraseña requerida</div>
+    }
 
     <button class="btn" type="submit" [disabled]="loading">
       {{ loading ? 'Entrando...' : 'Entrar' }}
     </button>
 
-    <div *ngIf="error" class="error">{{ error }}</div>
   </form>
+
+
 </div>
