@@ -1,0 +1,99 @@
+<div class="p-6 max-w-6xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Usuarios</h1>
+    <a
+      routerLink="/users/create"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+    >
+      + Nuevo usuario
+    </a>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-12">
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"
+    ></div>
+    <p class="mt-4 text-gray-600">Cargando usuarios...</p>
+  </div>
+
+  <!-- Users Grid -->
+  <div
+    *ngIf="!loading && users.length > 0"
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+  >
+    <div
+      *ngFor="let u of users"
+      class="bg-white rounded-xl shadow-lg hover:shadow-xl transition p-4"
+    >
+      <!-- Avatar / icono -->
+      <div
+        class="w-full h-32 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-md mb-3 flex items-center justify-center"
+      >
+        <span class="text-4xl">👤</span>
+      </div>
+
+      <div class="mb-2 flex items-center justify-between">
+        <h3 class="font-semibold text-lg">{{ u.username }}</h3>
+        <span class="text-xs text-gray-500">ID: {{ u.id }}</span>
+      </div>
+
+      <!-- Roles -->
+      <div class="mb-2 flex flex-wrap gap-2">
+        <span
+          *ngFor="let r of u.roles"
+          class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800"
+        >
+          {{ r }}
+        </span>
+      </div>
+
+      <!-- Estado (si más adelante usas active en DTO) -->
+      <div class="flex items-center gap-2 mt-2">
+        <span
+          *ngIf="u.active"
+          class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800"
+        >
+          ✓ Activo
+        </span>
+        <span
+          *ngIf="!u.active"
+          class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-800"
+        >
+          ✗ Inactivo
+        </span>
+      </div>
+
+      <!-- Acciones -->
+      <div class="flex gap-2 mt-4">
+        <a
+          [routerLink]="['/users/edit', u.id]"
+          class="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600 text-sm"
+        >
+          ✏️ Editar
+        </a>
+        <button
+          (click)="remove(u)"
+          class="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 text-sm"
+        >
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && users.length === 0" class="text-center py-12">
+    <div class="text-6xl mb-4">👥</div>
+    <h3 class="text-xl font-semibold text-gray-800 mb-2">
+      No hay usuarios creados
+    </h3>
+    <p class="text-gray-600 mb-4">Crea el primer usuario para comenzar</p>
+    <a
+      routerLink="/users/create"
+      class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+    >
+      + Crear primer usuario
+    </a>
+  </div>
+</div>
