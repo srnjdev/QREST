@@ -39,9 +39,13 @@ public class DataInitializer implements CommandLineRunner {
 
         // Crear usuario admin en la BD (solo si no existe)
         try {
-            userService.createUser("admin", "admin123", Set.of(Role.ROLE_ADMIN, Role.ROLE_USER));
+            userService.createUser("admin", "admin123", Set.of(Role.ROLE_ADMIN));
+            userService.createUser("user", "user123", Set.of(Role.ROLE_USER));
             System.out.println("=================================");
             System.out.println("👤 Usuario administrador creado en BD: admin / admin123");
+            System.out.println("=================================");
+            System.out.println("=================================");
+            System.out.println("👤 Usuario user creado en BD: user / user123");
             System.out.println("=================================");
         } catch (Exception e) {
             // Si ya existe o hay error, lo ignoramos para no detener el arranque

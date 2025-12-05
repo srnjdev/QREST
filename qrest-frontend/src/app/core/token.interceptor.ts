@@ -30,7 +30,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     catchError(err => {
       // 401 en cualquier endpoint protegido => token inválido/expirado
       if (err.status === 401 && !isAuthEndpoint) {
-        auth.logout(false);      // borra el token
+        auth.logout();      // borra el token
         router.navigate(['/login']);  // redirige al login
       }
       return throwError(() => err);
