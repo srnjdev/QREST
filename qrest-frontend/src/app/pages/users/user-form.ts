@@ -90,13 +90,11 @@ export class UserFormComponent {
   }
 
   // Método invocado desde template (ngModelChange) para mantener roles en sync
-  onRolesChange(value: string): void {
-    const rolesArray = (value || '')
-      .split(',')
-      .map(s => s.trim())
-      .filter((s: string) => s.length > 0);
-    this.model.roles = rolesArray;
-  }
+  onRolesSelectChange(selected: string[]) {
+  this.model.roles = selected;
+  this.model.rolesString = selected.join(',');
+}
+
 
   submit(): void {
     this.loading = true;
