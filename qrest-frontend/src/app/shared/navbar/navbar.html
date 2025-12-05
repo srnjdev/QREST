@@ -8,7 +8,7 @@
                     <span class="text-white text-xl font-bold">QREST</span>
                 </a>
             </div>
-
+            @if (auth.isLoggedIn()) {
             <!-- Menú de navegación -->
             <div class="flex items-center space-x-4">
                 <a routerLink="/"
@@ -23,10 +23,18 @@
                     class="text-white hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium transition">
                     Menús
                 </a>
-                @if (auth.isLoggedIn()) {
-                <button (click)="logout()">Cerrar Sesión</button>
-}
+                @if (auth.isAdmin()) {
+                <a  routerLink="/users"
+                    class="text-white hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium transition">
+                    Usuarios
+                </a>
+            }
+                <button class="text-white hover:bg-blue-500 px-3 py-2 rounded-md text-sm font-medium transition" 
+                    (click)="logout()">Cerrar Sesión
+                </button>
+
             </div>
+            }
         </div>
     </div>
 </nav>

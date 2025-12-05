@@ -16,6 +16,9 @@ public class User {
     @Column(nullable = false)
     private String password; // BCrypt hashed
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
@@ -40,4 +43,7 @@ public class User {
 
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }
