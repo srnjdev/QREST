@@ -1,14 +1,14 @@
 // src/app/pages/login/login.ts
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -16,24 +16,35 @@ export class LoginComponent {
   username = '';
   password = '';
   loading = false;
-  error: string | null = null;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private toast: ToastService
+  ) {}
 
   submit() {
-    this.error = null;
-    this.loading = true;
+    this.loading = false;
+
     this.auth.login(this.username, this.password).subscribe({
-      next: token => {
+      next: () => {
         this.loading = false;
-        // token ya guardado por AuthService
-        // redirigir a dashboard o a la ruta que quieras
+        // redirigir al inicio/dashboard
         this.router.navigateByUrl('/');
       },
-      error: err => {
-        this.loading = false;
-        // mostrar mensaje claro al usuario
-        this.error = err?.message ?? 'Login failed';
+      error: (err) => {
+        
+        if (err?.status === 401) {
+          this.loading = false;
+          this.toast.show('Usuario o contraseña incorrectos', 'error');
+        } else if (err?.status === 403) {
+          this.loading = false;
+          this.toast.show('No tienes permisos para acceder', 'warning');
+        } else {
+          this.loading = false;
+          this.toast.show('Ocurrió un error inesperado', 'error');
+        }
       }
     });
   }
