@@ -26,7 +26,7 @@ public class MenuService {
     private final DishRepository dishRepository;
     private final QRCodeService qrCodeService;
 
-    @Value("${APP_BASE_URL}")
+    @Value("${APP_BASE_URL:http://localhost:4200}")
     private String baseUrl;
 
     public List<MenuDTO> getAllMenus() {
