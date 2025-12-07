@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Menu } from '../../models/menu.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MenuService {
-  private apiUrl = 'http://localhost:8080/api/menus';
+  private apiUrl = `${environment.apiUrl}/api/menus`;
   /*private headers = new HttpHeaders({
     'Authorization': 'Basic ' + btoa('admin:admin123'),
     'Content-Type': 'application/json'
