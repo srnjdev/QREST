@@ -1,0 +1,40 @@
+<div class="container">
+  <h2 class="title">Iniciar sesión</h2>
+
+  <form (ngSubmit)="submit()" #f="ngForm" novalidate>
+    <input
+      class="input"
+      type="text"
+      name="username"
+      [(ngModel)]="username"
+      placeholder="Usuario"
+      required
+      #usernameInput="ngModel"
+      autocomplete="username"
+    />
+    @if (usernameInput.invalid && usernameInput.touched) {
+      <div class="error">Usuario requerido</div>
+    }
+
+    <input
+      class="input"
+      type="password"
+      name="password"
+      [(ngModel)]="password"
+      placeholder="Contraseña"
+      required
+      #passwordInput="ngModel"
+      autocomplete="current-password"
+    />
+    @if (passwordInput.invalid && passwordInput.touched) {
+      <div class="error">Contraseña requerida</div>
+    }
+
+    <button class="btn" type="submit" [disabled]="loading">
+      {{ loading ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+  </form>
+
+
+</div>
