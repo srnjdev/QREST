@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 interface LoginResponse {
   token?: string;
@@ -17,7 +18,7 @@ export class AuthService {
   private readonly TOKEN_KEY = 'token';
   private readonly ROLES_KEY = 'roles';
   private readonly USERNAME_KEY = 'username';
-  private readonly LOGIN_URL = '/api/auth/login';
+private readonly LOGIN_URL = `${environment.apiUrl}/api/auth/login`;
 
   constructor(private http: HttpClient, private router: Router) {}
 
